@@ -1,0 +1,932 @@
+{
+  "info": {
+    "_postman_id": "12345678-1234-1234-1234-123456789abc",
+    "name": "Product Import API - Complete",
+    "description": "Complete Postman Collection for Product Import API with Redis Queue\n\n## Features\n- JWT Authentication\n- CSV Upload & Import\n- Job Status Tracking\n- Queue Management\n\n## Setup\n1. Import this collection to Postman\n2. Update `base_url` variable if needed\n3. Run \"Login\" request first to get token\n4. Other requests will use token automatically\n\n## Variables\n- `base_url`: API base URL\n- `token`: JWT token (auto-populated after login)\n- `job_id`: Import job ID (auto-populated after upload)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/php-redis-import-api/public",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "job_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Test: Check if response has token",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('token');",
+                  "});",
+                  "",
+                  "// Save token to collection variable",
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.environment.set('token', jsonData.data.token);",
+                  "    console.log('Token saved:', jsonData.data.token.substring(0, 20) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account.\n\n**Request Body:**\n- `username` (required): Unique username\n- `email` (required): Valid email address\n- `password` (required): Password (min 6 characters)\n\n**Response:**\n- Returns JWT token and user information"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "register"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"User registered successfully\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\",\n    \"token_type\": \"Bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"testuser\",\n      \"email\": \"testuser@example.com\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Error - Username Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "register"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Username already exists\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test: Check if response has token",
+                  "pm.test(\"Response has token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('token');",
+                  "});",
+                  "",
+                  "// Test: Check if user data is present",
+                  "pm.test(\"Response has user data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.user).to.have.property('username');",
+                  "    pm.expect(jsonData.data.user).to.have.property('email');",
+                  "});",
+                  "",
+                  "// Save token to collection variable",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.environment.set('token', jsonData.data.token);",
+                  "    console.log('Token saved:', jsonData.data.token.substring(0, 20) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with username and password to obtain JWT token.\n\n**Default Credentials:**\n- Username: `admin`\n- Password: `password123`\n\n**Request Body:**\n- `username` (required): User's username\n- `password` (required): User's password\n\n**Response:**\n- Returns JWT token valid for 3600 seconds (1 hour)\n- Token will be automatically saved to collection variables"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTcxMTUxMjAwMCwiZXhwIjoxNzExNTE1NjAwfQ...\",\n    \"token_type\": \"Bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n      \"id\": 1,\n      \"username\": \"admin\",\n      \"email\": \"admin@example.com\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Error - Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrongpassword\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "login"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid credentials\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User Info",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test: Check if response has user data",
+                  "pm.test(\"Response has user data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('username');",
+                  "    pm.expect(jsonData.data).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current authenticated user information.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Response:**\n- Returns user profile information"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/auth/me",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "auth", "me"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"username\": \"admin\",\n    \"email\": \"admin@example.com\",\n    \"created_at\": \"2025-03-27 10:00:00\"\n  }\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Authentication endpoints for user registration and login."
+    },
+    {
+      "name": "2. Import Products",
+      "item": [
+        {
+          "name": "Upload CSV File",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "// Test: Check if response has job_id",
+                  "pm.test(\"Response has job_id\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('job_id');",
+                  "});",
+                  "",
+                  "// Test: Check if status is pending",
+                  "pm.test(\"Initial status is pending\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.status).to.eql('pending');",
+                  "});",
+                  "",
+                  "// Test: Response time should be fast (non-blocking)",
+                  "pm.test(\"Response time is less than 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "// Save job_id to collection variable",
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('job_id', jsonData.data.job_id);",
+                  "    pm.environment.set('job_id', jsonData.data.job_id);",
+                  "    console.log('Job ID saved:', jsonData.data.job_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "sample.csv",
+                  "description": "CSV file with format: name,sku,price,stock"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/import/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "import", "products"]
+            },
+            "description": "Upload CSV file for product import.\n\n**Authentication:** Required (JWT Bearer token)\n\n**File Format:**\n```csv\nname,sku,price,stock\nLaptop Dell,DELL-001,15000000,25\niPhone 14,APPLE-001,18000000,50\n```\n\n**Validations:**\n- File type: .csv only\n- Max size: 10MB (configurable)\n- Required headers: name, sku, price, stock\n- File must not be empty\n\n**Process:**\n1. File is validated and saved\n2. Job is created in database\n3. Job is pushed to Redis queue\n4. Returns immediately with job_id (non-blocking)\n5. Worker processes in background\n\n**Response:**\n- Returns `job_id` and status `pending`\n- Use job_id to check status later"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "sample.csv"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/import/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "products"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"job_id\": 123,\n    \"status\": \"pending\",\n    \"message\": \"File uploaded successfully and queued for processing\"\n  }\n}"
+            },
+            {
+              "name": "Error - Invalid File Type",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "test.txt"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/import/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "products"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file type. Only CSV files are allowed\"\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "sample.csv"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/import/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "products"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized\",\n  \"error\": \"Token not provided\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Import Job Status (Dynamic)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test: Check if response has required fields",
+                  "pm.test(\"Response has required fields\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('job_id');",
+                  "    pm.expect(jsonData.data).to.have.property('status');",
+                  "    pm.expect(jsonData.data).to.have.property('total');",
+                  "    pm.expect(jsonData.data).to.have.property('success');",
+                  "    pm.expect(jsonData.data).to.have.property('failed');",
+                  "});",
+                  "",
+                  "// Display status in console",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    console.log('Job Status:', jsonData.data.status);",
+                  "    console.log('Progress:', jsonData.data.success, '/', jsonData.data.total);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/import/status/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "import", "status", "{{job_id}}"]
+            },
+            "description": "Check the status of an import job using saved job_id.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Job Status Values:**\n- `pending`: Job queued, not yet processed\n- `in_progress`: Worker is processing the job\n- `completed`: Job finished successfully\n- `failed`: Job failed completely\n\n**Response includes:**\n- Job status\n- Total rows\n- Success count\n- Failed count\n- Created/Updated timestamps\n- Error details (if any)\n- Sample of errors (max 10)"
+          },
+          "response": [
+            {
+              "name": "Status - Pending",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/import/status/123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "status", "123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"job_id\": 123,\n    \"status\": \"pending\",\n    \"filename\": \"products.csv\",\n    \"total\": 1000,\n    \"success\": 0,\n    \"failed\": 0,\n    \"created_at\": \"2025-03-27 10:00:00\",\n    \"updated_at\": \"2025-03-27 10:00:00\"\n  }\n}"
+            },
+            {
+              "name": "Status - In Progress",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/import/status/123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "status", "123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"job_id\": 123,\n    \"status\": \"in_progress\",\n    \"filename\": \"products.csv\",\n    \"total\": 1000,\n    \"success\": 450,\n    \"failed\": 3,\n    \"created_at\": \"2025-03-27 10:00:00\",\n    \"updated_at\": \"2025-03-27 10:00:30\"\n  }\n}"
+            },
+            {
+              "name": "Status - Completed with Errors",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/import/status/123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "status", "123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"job_id\": 123,\n    \"status\": \"completed\",\n    \"filename\": \"products.csv\",\n    \"total\": 1000,\n    \"success\": 995,\n    \"failed\": 5,\n    \"created_at\": \"2025-03-27 10:00:00\",\n    \"updated_at\": \"2025-03-27 10:00:52\",\n    \"errors\": [\n      {\n        \"row_number\": 45,\n        \"error_message\": \"Row 45: SKU is required\",\n        \"row_data\": [\"Product Name\", \"\", \"10000\", \"50\"]\n      },\n      {\n        \"row_number\": 127,\n        \"error_message\": \"Row 127: Price must be a positive number\",\n        \"row_data\": [\"Product B\", \"SKU-002\", \"invalid\", \"10\"]\n      },\n      {\n        \"row_number\": 345,\n        \"error_message\": \"Row 345: Product name is required\",\n        \"row_data\": [\"\", \"SKU-345\", \"50000\", \"100\"]\n      }\n    ],\n    \"total_errors\": 5\n  }\n}"
+            },
+            {
+              "name": "Status - Completed Successfully",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/import/status/123",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "import", "status", "123"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"job_id\": 123,\n    \"status\": \"completed\",\n    \"filename\": \"products.csv\",\n    \"total\": 1000,\n    \"success\": 1000,\n    \"failed\": 0,\n    \"created_at\": \"2025-03-27 10:00:00\",\n    \"updated_at\": \"2025-03-27 10:00:52\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Import Job Status (ID: 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 200 or 404\", function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/import/status/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "import", "status", "1"]
+            },
+            "description": "Check status of import job with ID = 1.\n\nThis is useful for checking the first import job."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for uploading CSV files and tracking import job status."
+    },
+    {
+      "name": "3. Queue Management",
+      "item": [
+        {
+          "name": "Get Queue Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if request was successful",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test: Check if response has queue info",
+                  "pm.test(\"Response has queue information\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('queue_name');",
+                  "    pm.expect(jsonData.data).to.have.property('pending_jobs');",
+                  "});",
+                  "",
+                  "// Display queue status",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    console.log('Queue:', jsonData.data.queue_name);",
+                  "    console.log('Pending Jobs:', jsonData.data.pending_jobs);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/queue/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "queue", "status"]
+            },
+            "description": "Get current Redis queue status.\n\n**Authentication:** Required (JWT Bearer token)\n\n**Response includes:**\n- Queue name\n- Number of pending jobs waiting to be processed\n\n**Use cases:**\n- Monitor queue backlog\n- Check if worker is processing jobs\n- Capacity planning"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/queue/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "queue", "status"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"queue_name\": \"product_import_queue\",\n    \"pending_jobs\": 3\n  }\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Endpoints for monitoring Redis queue status."
+    },
+    {
+      "name": "4. Health & Info",
+      "item": [
+        {
+          "name": "API Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Test: Check if API is running",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Test: Check if response is success",
+                  "pm.test(\"API is running\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "});",
+                  "",
+                  "// Test: Response time",
+                  "pm.test(\"Response time is less than 500ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Health check endpoint to verify API is running.\n\n**Authentication:** Not required\n\n**Use cases:**\n- Check if API is accessible\n- Monitor uptime\n- Load balancer health check"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/",
+                  "host": ["{{base_url}}"],
+                  "path": [""]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Product Import API is running\",\n  \"version\": \"1.0.0\",\n  \"timestamp\": \"2025-03-27 10:00:00\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Health check and informational endpoints."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script runs before every request",
+          "// Check if token exists",
+          "var token = pm.collectionVariables.get('token');",
+          "if (!token) {",
+          "    console.log('No token found. Please run Login request first.');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test script runs after every response",
+          "// Log response time",
+          "console.log('Response time:', pm.response.responseTime + 'ms');"
+        ]
+      }
+    }
+  ]
+}
