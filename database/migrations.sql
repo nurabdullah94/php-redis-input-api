@@ -58,12 +58,3 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email (email),
     INDEX idx_api_token (api_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Insert default user (password: password123)
-INSERT INTO users (username, email, password, api_token)
-VALUES (
-    'admin',
-    'admin@example.com',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-    'test_api_token_12345'
-) ON DUPLICATE KEY UPDATE username = username;
