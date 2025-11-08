@@ -8,17 +8,17 @@ Documentation untuk semua sample CSV files yang tersedia untuk testing.
 
 | File | Rows | Size | Use Case |
 |------|------|------|----------|
-| `sample.csv` | 10 | ~489 B | Quick testing & demo |
-| `sample_1k.csv` | 1,000 | ~38 KB | Small dataset testing |
-| `sample_10k.csv` | 10,000 | ~382 KB | Medium dataset testing |
-| `sample_50k.csv` | 50,000 | ~1.9 MB | Large dataset testing |
-| `sample_100k.csv` | 100,000 | ~5.2 MB | Stress testing |
+| `tests/samples/sample.csv` | 10 | ~489 B | Quick testing & demo |
+| `tests/samples/sample_1k.csv` | 1,000 | ~38 KB | Small dataset testing |
+| `tests/samples/sample_10k.csv` | 10,000 | ~382 KB | Medium dataset testing |
+| `tests/samples/sample_50k.csv` | 50,000 | ~1.9 MB | Large dataset testing |
+| `tests/samples/sample_100k.csv` | 100,000 | ~5.2 MB | Stress testing |
 
 ---
 
 ## 📊 File Details
 
-### 1. **sample.csv** (Original)
+### 1. **tests/samples/sample.csv** (Original)
 **Purpose:** Quick demo & validation
 **Rows:** 10 products
 **Size:** ~489 bytes
@@ -43,7 +43,7 @@ Documentation untuk semua sample CSV files yang tersedia untuk testing.
 
 ---
 
-### 2. **sample_1k.csv**
+### 2. **tests/samples/sample_1k.csv**
 **Purpose:** Small dataset testing
 **Rows:** 1,000 products
 **Size:** ~38 KB
@@ -63,7 +63,7 @@ Documentation untuk semua sample CSV files yang tersedia untuk testing.
 
 ---
 
-### 3. **sample_10k.csv**
+### 3. **tests/samples/sample_10k.csv**
 **Purpose:** Medium dataset testing
 **Rows:** 10,000 products
 **Size:** ~382 KB
@@ -82,7 +82,7 @@ Documentation untuk semua sample CSV files yang tersedia untuk testing.
 
 ---
 
-### 4. **sample_50k.csv**
+### 4. **tests/samples/sample_50k.csv**
 **Purpose:** Large dataset testing
 **Rows:** 50,000 products
 **Size:** ~1.9 MB
@@ -102,7 +102,7 @@ Documentation untuk semua sample CSV files yang tersedia untuk testing.
 
 ---
 
-### 5. **sample_100k.csv** ⭐
+### 5. **tests/samples/sample_100k.csv** ⭐
 **Purpose:** Stress testing & scalability
 **Rows:** 100,000 products
 **Size:** ~5.2 MB
@@ -180,14 +180,14 @@ TOKEN=$(curl -s -X POST http://localhost/php-redis-import-api/public/api/auth/lo
 # Upload 100k sample
 curl -X POST http://localhost/php-redis-import-api/public/api/import/products \
   -H "Authorization: Bearer $TOKEN" \
-  -F "file=@sample_100k.csv"
+  -F "file=@tests/samples/sample_100k.csv"
 ```
 
 ### **Upload via PHP**
 
 ```php
 $token = 'your-jwt-token';
-$file = 'sample_100k.csv';
+$file = 'tests/samples/sample_100k.csv';
 
 $curl = curl_init();
 curl_setopt_array($curl, [
@@ -214,7 +214,7 @@ echo "Job ID: " . $result['data']['job_id'];
 ## 🧪 Testing Scenarios
 
 ### **Scenario 1: Quick Validation**
-**File:** `sample.csv` (10 rows)
+**File:** `tests/samples/sample.csv` (10 rows)
 **Purpose:** Verify basic functionality
 
 1. Upload file
@@ -226,7 +226,7 @@ echo "Job ID: " . $result['data']['job_id'];
 ---
 
 ### **Scenario 2: Performance Testing**
-**File:** `sample_10k.csv` (10,000 rows)
+**File:** `tests/samples/sample_10k.csv` (10,000 rows)
 **Purpose:** Measure processing speed
 
 1. Start worker
@@ -238,7 +238,7 @@ echo "Job ID: " . $result['data']['job_id'];
 ---
 
 ### **Scenario 3: Multiple Workers**
-**File:** `sample_50k.csv` (50,000 rows)
+**File:** `tests/samples/sample_50k.csv` (50,000 rows)
 **Purpose:** Test parallel processing
 
 1. Start 3 workers simultaneously
@@ -250,7 +250,7 @@ echo "Job ID: " . $result['data']['job_id'];
 ---
 
 ### **Scenario 4: Stress Test**
-**File:** `sample_100k.csv` (100,000 rows)
+**File:** `tests/samples/sample_100k.csv` (100,000 rows)
 **Purpose:** Test system limits
 
 1. Upload 100k file
@@ -279,18 +279,18 @@ echo "Job ID: " . $result['data']['job_id'];
 
 ```bash
 # Regenerate 100k sample
-php generate_sample.php
+php scripts/generate_sample.php
 
 # Regenerate other sizes
 php -r "
 // Script to create 1k, 10k, 50k samples
-// See generate_sample.php for full code
+// See scripts/generate_sample.php for full code
 "
 ```
 
 ### **Custom Sample Size**
 
-Edit `generate_sample.php` and change:
+Edit `scripts/generate_sample.php` and change:
 ```php
 $totalProducts = 100000;  // Change to desired size
 ```
@@ -303,11 +303,11 @@ $totalProducts = 100000;  // Change to desired size
 
 | File | Rows | Expected Time | Speed |
 |------|------|---------------|-------|
-| sample.csv | 10 | <1 second | N/A |
-| sample_1k.csv | 1,000 | ~1 minute | ~1000/min |
-| sample_10k.csv | 10,000 | ~10 minutes | ~1000/min |
-| sample_50k.csv | 50,000 | ~50 minutes | ~1000/min |
-| sample_100k.csv | 100,000 | ~100 minutes | ~1000/min |
+| tests/samples/sample.csv | 10 | <1 second | N/A |
+| tests/samples/sample_1k.csv | 1,000 | ~1 minute | ~1000/min |
+| tests/samples/sample_10k.csv | 10,000 | ~10 minutes | ~1000/min |
+| tests/samples/sample_50k.csv | 50,000 | ~50 minutes | ~1000/min |
+| tests/samples/sample_100k.csv | 100,000 | ~100 minutes | ~1000/min |
 
 ### **Multiple Workers Performance**
 
@@ -315,14 +315,14 @@ $totalProducts = 100000;  // Change to desired size
 
 | File | Rows | Expected Time | Speed |
 |------|------|---------------|-------|
-| sample_50k.csv | 50,000 | ~17 minutes | ~3000/min |
-| sample_100k.csv | 100,000 | ~33 minutes | ~3000/min |
+| tests/samples/sample_50k.csv | 50,000 | ~17 minutes | ~3000/min |
+| tests/samples/sample_100k.csv | 100,000 | ~33 minutes | ~3000/min |
 
 **5 Workers:**
 
 | File | Rows | Expected Time | Speed |
 |------|------|---------------|-------|
-| sample_100k.csv | 100,000 | ~20 minutes | ~5000/min |
+| tests/samples/sample_100k.csv | 100,000 | ~20 minutes | ~5000/min |
 
 **Note:** Performance may vary based on system resources and database configuration.
 
@@ -334,11 +334,11 @@ $totalProducts = 100000;  // Change to desired size
 
 | File | Rows | DB Size (approx) |
 |------|------|------------------|
-| sample.csv | 10 | <1 KB |
-| sample_1k.csv | 1,000 | ~100 KB |
-| sample_10k.csv | 10,000 | ~1 MB |
-| sample_50k.csv | 50,000 | ~5 MB |
-| sample_100k.csv | 100,000 | ~10 MB |
+| tests/samples/sample.csv | 10 | <1 KB |
+| tests/samples/sample_1k.csv | 1,000 | ~100 KB |
+| tests/samples/sample_10k.csv | 10,000 | ~1 MB |
+| tests/samples/sample_50k.csv | 50,000 | ~5 MB |
+| tests/samples/sample_100k.csv | 100,000 | ~10 MB |
 
 **Note:** Actual size depends on database engine and indexing.
 
@@ -396,7 +396,7 @@ max_allowed_packet = 64M
   - Dell Monitor Ultra
 
 ### **SKU Format**
-- **sample.csv:** Manual (e.g., DELL-XPS13-001)
+- **tests/samples/sample.csv:** Manual (e.g., DELL-XPS13-001)
 - **1k-50k:** SKU-XXXXXX (6 digits)
 - **100k:** BRAND-CATEGORY-XXXXXX (4+4+6 chars)
 
@@ -413,22 +413,22 @@ max_allowed_packet = 64M
 ## ✅ Best Practices
 
 ### **For Development**
-- Use `sample.csv` or `sample_1k.csv`
+- Use `tests/samples/sample.csv` or `tests/samples/sample_1k.csv`
 - Quick feedback loop
 - Easy to debug
 
 ### **For Testing**
-- Use `sample_10k.csv`
+- Use `tests/samples/sample_10k.csv`
 - Realistic performance testing
 - Reasonable processing time
 
 ### **For Production Validation**
-- Use `sample_50k.csv` or `sample_100k.csv`
+- Use `tests/samples/sample_50k.csv` or `tests/samples/sample_100k.csv`
 - Stress testing
 - Capacity planning
 
 ### **For Demos**
-- Use `sample.csv`
+- Use `tests/samples/sample.csv`
 - Shows real product names
 - Quick to complete
 
@@ -436,13 +436,13 @@ max_allowed_packet = 64M
 
 ## 📚 Related Documentation
 
-- [README.md](README.md) - API documentation
-- [QUICKSTART.md](QUICKSTART.md) - Quick start guide
-- [POSTMAN_GUIDE.md](POSTMAN_GUIDE.md) - Postman usage
-- [generate_sample.php](generate_sample.php) - Generator script
+- [docs/README.md](docs/README.md) - API documentation
+- [docs/QUICKSTART.md](docs/QUICKSTART.md) - Quick start guide
+- [docs/POSTMAN_GUIDE.md](docs/POSTMAN_GUIDE.md) - Postman usage
+- [scripts/generate_sample.php](scripts/generate_sample.php) - Generator script
 
 ---
 
 **Last Updated:** 2025-03-27
 
-**Generated By:** [generate_sample.php](generate_sample.php)
+**Generated By:** [scripts/generate_sample.php](scripts/generate_sample.php)

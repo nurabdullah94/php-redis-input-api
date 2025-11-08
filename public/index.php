@@ -10,11 +10,17 @@ use App\Queue\QueueManager;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+try {
+    $dotenv->load();
+} catch (Exception $e) {
+    // Try safeLoad if load fails (for older versions)
+    $dotenv->safeLoad();
+}
 
 // Error handling
-error_reporting($_ENV['APP_DEBUG'] ? E_ALL : 0);
-ini_set('display_errors', $_ENV['APP_DEBUG'] ? '1' : '0');
+$appDebug = $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?? true;
+error_reporting($appDebug ? E_ALL : 0);
+ini_set('display_errors', $appDebug ? '1' : '0');
 
 // Set headers
 header('Access-Control-Allow-Origin: *');

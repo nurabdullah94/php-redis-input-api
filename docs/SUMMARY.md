@@ -81,7 +81,7 @@ GET    /                        Health check
 - id, filename, original_filename, status, total, success, failed, error_message, user_id, created_at, updated_at
 
 **import_errors**
-- id, import_job_id, row_number, error_message, row_data, created_at
+- id, import_job_id, line_number, error_message, row_data, created_at
 
 **users**
 - id, username (unique), email (unique), password, api_token, created_at, updated_at
@@ -146,8 +146,8 @@ php-redis-import-api/
 ├── uploads/                # CSV storage
 ├── Documentation files     # README, guides
 ├── composer.json           # Dependencies
-├── postman_collection.json # API collection
-├── sample.csv              # Test data
+├── tests/postman_collection.json # API collection
+├── tests/samples/sample.csv              # Test data
 └── worker.php              # Queue worker
 ```
 
@@ -156,7 +156,7 @@ php-redis-import-api/
 ## Documentation
 
 ### 📘 Main Documentation
-- **[README.md](README.md)** (13KB)
+- **[docs/README.md](docs/README.md)** (13KB)
   - Complete API documentation
   - Features & tech stack
   - Installation steps
@@ -165,7 +165,7 @@ php-redis-import-api/
   - Troubleshooting
 
 ### 📗 Installation Guide
-- **[INSTALLATION.md](INSTALLATION.md)** (11KB)
+- **[docs/INSTALLATION.md](docs/INSTALLATION.md)** (11KB)
   - Step-by-step installation
   - Prerequisites
   - Configuration guide
@@ -173,14 +173,14 @@ php-redis-import-api/
   - Common issues & solutions
 
 ### 📙 Quick Start
-- **[QUICKSTART.md](QUICKSTART.md)** (3.8KB)
+- **[docs/QUICKSTART.md](docs/QUICKSTART.md)** (3.8KB)
   - 5-minute setup guide
   - Quick testing steps
   - Using Postman
   - Troubleshooting
 
 ### 📕 Assessment
-- **[ASSESSMENT.md](ASSESSMENT.md)** (16KB)
+- **[docs/ASSESSMENT.md](docs/ASSESSMENT.md)** (16KB)
   - Compliance with all requirements
   - Architecture explanation
   - Security implementation
@@ -188,7 +188,7 @@ php-redis-import-api/
   - Clean code examples
 
 ### 📔 Project Structure
-- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** (12KB)
+- **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** (12KB)
   - Complete file organization
   - Directory details
   - Code flow diagrams
@@ -200,7 +200,7 @@ php-redis-import-api/
 ## Testing
 
 ### Postman Collection
-Import `postman_collection.json` for ready-to-use API tests.
+Import `tests/postman_collection.json` for ready-to-use API tests.
 
 **Includes:**
 - All endpoints
@@ -209,7 +209,7 @@ Import `postman_collection.json` for ready-to-use API tests.
 - Environment variables
 
 ### Test Script
-Run `bash test.sh` for automated testing:
+Run `bash scripts/test.sh` for automated testing:
 - Health check
 - Login
 - Upload CSV
@@ -218,7 +218,7 @@ Run `bash test.sh` for automated testing:
 - Unauthorized access tests
 
 ### Sample Data
-`sample.csv` contains 10 sample products for testing.
+`tests/samples/sample.csv` contains 10 sample products for testing.
 
 ---
 
@@ -309,7 +309,7 @@ curl -X POST http://localhost:8000/api/auth/login \
 # Upload CSV
 curl -X POST http://localhost:8000/api/import/products \
   -H "Authorization: Bearer <token>" \
-  -F "file=@sample.csv"
+  -F "file=@tests/samples/sample.csv"
 
 # Check Status
 curl -X GET http://localhost:8000/api/import/status/1 \
@@ -384,16 +384,16 @@ curl -X GET http://localhost:8000/api/import/status/1 \
 ## Support & Resources
 
 ### Documentation
-- [README.md](README.md) - Main documentation
-- [INSTALLATION.md](INSTALLATION.md) - Installation guide
-- [QUICKSTART.md](QUICKSTART.md) - Quick start
-- [ASSESSMENT.md](ASSESSMENT.md) - Assessment compliance
-- [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) - Project structure
+- [docs/README.md](docs/README.md) - Main documentation
+- [docs/INSTALLATION.md](docs/INSTALLATION.md) - Installation guide
+- [docs/QUICKSTART.md](docs/QUICKSTART.md) - Quick start
+- [docs/ASSESSMENT.md](docs/ASSESSMENT.md) - Assessment compliance
+- [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) - Project structure
 
 ### Testing
-- [postman_collection.json](postman_collection.json) - Postman collection
-- [test.sh](test.sh) - Automated test script
-- [sample.csv](sample.csv) - Sample data
+- [tests/postman_collection.json](tests/postman_collection.json) - Postman collection
+- [scripts/test.sh](scripts/test.sh) - Automated test script
+- [tests/samples/sample.csv](tests/samples/sample.csv) - Sample data
 
 ### Code
 - Well-commented PHP classes

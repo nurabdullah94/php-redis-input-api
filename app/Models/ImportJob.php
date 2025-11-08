@@ -141,21 +141,21 @@ class ImportJob
      * Log import error
      *
      * @param int $jobId
-     * @param int $rowNumber
+     * @param int $lineNumber
      * @param string $errorMessage
      * @param string|null $rowData
      * @return bool
      */
-    public function logError(int $jobId, int $rowNumber, string $errorMessage, ?string $rowData = null): bool
+    public function logError(int $jobId, int $lineNumber, string $errorMessage, ?string $rowData = null): bool
     {
-        $sql = "INSERT INTO import_errors (import_job_id, row_number, error_message, row_data, created_at)
-                VALUES (:job_id, :row_number, :error_message, :row_data, NOW())";
+        $sql = "INSERT INTO import_errors (import_job_id, line_number, error_message, row_data, created_at)
+                VALUES (:job_id, :line_number, :error_message, :row_data, NOW())";
 
         try {
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 ':job_id' => $jobId,
-                ':row_number' => $rowNumber,
+                ':line_number' => $lineNumber,
                 ':error_message' => $errorMessage,
                 ':row_data' => $rowData
             ]);
@@ -172,7 +172,7 @@ class ImportJob
      */
     public function getErrors(int $jobId): array
     {
-        $sql = "SELECT * FROM import_errors WHERE import_job_id = :job_id ORDER BY row_number ASC";
+        $sql = "SELECT * FROM import_errors WHERE import_job_id = :job_id ORDER BY line_number ASC";
 
         try {
             $stmt = $this->db->prepare($sql);

@@ -9,7 +9,12 @@ use App\Queue\QueueManager;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+try {
+    $dotenv->load();
+} catch (Exception $e) {
+    // Try safeLoad if load fails (for older versions)
+    $dotenv->safeLoad();
+}
 
 // Error handling
 error_reporting(E_ALL);

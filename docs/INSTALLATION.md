@@ -340,12 +340,12 @@ Press Ctrl+C to stop
 ```bash
 curl -X POST http://localhost/php-redis-import-api/public/api/import/products \
   -H "Authorization: Bearer <your-token-from-login>" \
-  -F "file=@sample.csv"
+  -F "file=@tests/samples/sample.csv"
 ```
 
 #### Using Postman:
 
-1. Import collection: `postman_collection.json`
+1. Import collection: `tests/postman_collection.json`
 2. Set variable `base_url`: `http://localhost/php-redis-import-api/public`
 3. Run "Login" request
 4. Run "Upload CSV File" request
@@ -590,10 +590,10 @@ chmod -R 775 /var/www/php-redis-import-api/logs
 
 ## Next Steps
 
-1. Read [README.md](README.md) for API documentation
-2. Import [postman_collection.json](postman_collection.json) to Postman
+1. Read [docs/README.md](docs/README.md) for API documentation
+2. Import [tests/postman_collection.json](tests/postman_collection.json) to Postman
 3. Test all endpoints
-4. Upload sample data using [sample.csv](sample.csv)
+4. Upload sample data using [tests/samples/sample.csv](tests/samples/sample.csv)
 5. Monitor logs in `logs/` folder
 6. Check worker output for processing status
 

@@ -42,19 +42,19 @@ Complete checklist untuk memverifikasi bahwa semua komponen project telah selesa
 ## ✅ Documentation
 
 ### Main Documentation
-- [x] `README.md` (13KB) - Complete API documentation
-- [x] `INSTALLATION.md` (11KB) - Installation & deployment guide
-- [x] `QUICKSTART.md` (3.8KB) - Quick start guide
-- [x] `ASSESSMENT.md` (16KB) - Requirements compliance
-- [x] `PROJECT_STRUCTURE.md` (12KB) - Architecture documentation
-- [x] `SUMMARY.md` (9KB) - Project overview
-- [x] `INDEX.md` - Documentation navigation
-- [x] `CHECKLIST.md` (this file) - Completion checklist
+- [x] `docs/README.md` (13KB) - Complete API documentation
+- [x] `docs/INSTALLATION.md` (11KB) - Installation & deployment guide
+- [x] `docs/QUICKSTART.md` (3.8KB) - Quick start guide
+- [x] `docs/ASSESSMENT.md` (16KB) - Requirements compliance
+- [x] `docs/PROJECT_STRUCTURE.md` (12KB) - Architecture documentation
+- [x] `docs/SUMMARY.md` (9KB) - Project overview
+- [x] `docs/INDEX.md` - Documentation navigation
+- [x] `docs/CHECKLIST.md` (this file) - Completion checklist
 
 ### Testing & Samples
-- [x] `postman_collection.json` - Postman API collection
-- [x] `test.sh` - Automated test script
-- [x] `sample.csv` - Sample data for testing
+- [x] `tests/postman_collection.json` - Postman API collection
+- [x] `scripts/test.sh` - Automated test script
+- [x] `tests/samples/sample.csv` - Sample data for testing
 
 ---
 
@@ -236,7 +236,7 @@ Complete checklist untuk memverifikasi bahwa semua komponen project telah selesa
 
 ### Test Files
 - [x] Postman collection with all endpoints
-- [x] Automated test script (test.sh)
+- [x] Automated test script (scripts/test.sh)
 - [x] Sample CSV data
 - [x] Test scenarios documented
 
@@ -320,7 +320,7 @@ Complete checklist untuk memverifikasi bahwa semua komponen project telah selesa
 - [x] Comments & docs
 
 ### Dokumentasi
-- [x] README.md lengkap
+- [x] docs/README.md lengkap
 - [x] Installation guide
 - [x] Postman collection
 - [x] API examples
@@ -540,17 +540,17 @@ All requirements met:
 ## Next Steps
 
 1. **For Users:**
-   - Follow [QUICKSTART.md](QUICKSTART.md)
-   - Test with [postman_collection.json](postman_collection.json)
-   - Read [README.md](README.md) for details
+   - Follow [docs/QUICKSTART.md](docs/QUICKSTART.md)
+   - Test with [tests/postman_collection.json](tests/postman_collection.json)
+   - Read [docs/README.md](docs/README.md) for details
 
 2. **For Developers:**
-   - Review [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+   - Review [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
    - Read source code in `/app`
-   - Run tests with [test.sh](test.sh)
+   - Run tests with [scripts/test.sh](scripts/test.sh)
 
 3. **For Evaluators:**
-   - Review [ASSESSMENT.md](ASSESSMENT.md)
+   - Review [docs/ASSESSMENT.md](docs/ASSESSMENT.md)
    - Test all endpoints
    - Verify requirements compliance
 

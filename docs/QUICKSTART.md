@@ -64,7 +64,7 @@ Copy token dari response.
 ```bash
 curl -X POST http://localhost/php-redis-import-api/public/api/import/products \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  -F "file=@sample.csv"
+  -F "file=@tests/samples/sample.csv"
 ```
 
 Copy job_id dari response.
@@ -81,7 +81,7 @@ curl -X GET http://localhost/php-redis-import-api/public/api/import/status/1 \
 
 ### 1. Import Collection
 - Open Postman
-- Import → File → `postman_collection.json`
+- Import → File → `tests/postman_collection.json`
 
 ### 2. Set Base URL
 - Collection variables
@@ -152,9 +152,9 @@ php worker.php
 
 ## Next Steps
 
-1. Read full documentation: [README.md](README.md)
-2. See installation guide: [INSTALLATION.md](INSTALLATION.md)
-3. Review assessment: [ASSESSMENT.md](ASSESSMENT.md)
+1. Read full documentation: [docs/README.md](docs/README.md)
+2. See installation guide: [docs/INSTALLATION.md](docs/INSTALLATION.md)
+3. Review assessment: [docs/ASSESSMENT.md](docs/ASSESSMENT.md)
 4. Try uploading your own CSV files
 5. Monitor logs in `logs/` folder
 
@@ -191,16 +191,16 @@ php-redis-import-api/
 ├── .env            # Environment config
 ├── composer.json   # Dependencies
 ├── worker.php      # Queue worker
-└── sample.csv      # Sample data
+└── tests/samples/sample.csv      # Sample data
 ```
 
 ---
 
 ## Support
 
-- Full docs: [README.md](README.md)
-- Installation: [INSTALLATION.md](INSTALLATION.md)
-- Assessment: [ASSESSMENT.md](ASSESSMENT.md)
+- Full docs: [docs/README.md](docs/README.md)
+- Installation: [docs/INSTALLATION.md](docs/INSTALLATION.md)
+- Assessment: [docs/ASSESSMENT.md](docs/ASSESSMENT.md)
 
 ---
 

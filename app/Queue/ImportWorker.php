@@ -38,12 +38,19 @@ class ImportWorker
         echo "Queue: {$this->queueManager->getQueueName()}\n";
         echo "Press Ctrl+C to stop\n\n";
 
-        // Handle graceful shutdown
-        pcntl_signal(SIGTERM, [$this, 'shutdown']);
-        pcntl_signal(SIGINT, [$this, 'shutdown']);
+        // Handle graceful shutdown (only if PCNTL extension is available)
+        if (function_exists('pcntl_signal')) {
+            pcntl_signal(SIGTERM, [$this, 'shutdown']);
+            pcntl_signal(SIGINT, [$this, 'shutdown']);
+        } else {
+            echo "Note: PCNTL extension not available (Windows). Use Ctrl+C to stop.\n\n";
+        }
 
         while (true) {
-            pcntl_signal_dispatch();
+            // Dispatch signals if available
+            if (function_exists('pcntl_signal_dispatch')) {
+                pcntl_signal_dispatch();
+            }
 
             // Pop job from queue with 5 second timeout
             $job = $this->queueManager->pop(5);

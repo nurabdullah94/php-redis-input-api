@@ -8,17 +8,17 @@ Panduan lengkap untuk menggunakan Postman Collection Product Import API.
 
 Project ini menyediakan 3 file Postman:
 
-1. **`Product_Import_API.postman_collection.json`** (Recommended)
+1. **`Product_Import_API.tests/postman_collection.json`** (Recommended)
    - Collection lengkap dengan example responses
    - Test scripts untuk validasi otomatis
    - Auto-save token dan job_id
    - Dokumentasi lengkap
 
-2. **`postman_collection.json`** (Simple)
+2. **`tests/postman_collection.json`** (Simple)
    - Collection sederhana tanpa example
    - Cocok untuk quick testing
 
-3. **`Product_Import_API.postman_environment.json`**
+3. **`tests/Product_Import_API.postman_environment.json`**
    - Environment variables untuk Local
    - Pre-configured dengan default values
 
@@ -30,13 +30,13 @@ Project ini menyediakan 3 file Postman:
 
 1. Open Postman
 2. Click **Import** button
-3. Select file: `Product_Import_API.postman_collection.json`
+3. Select file: `Product_Import_API.tests/postman_collection.json`
 4. Click **Import**
 
 ### Step 2: Import Environment (Optional)
 
 1. Click **Import** button
-2. Select file: `Product_Import_API.postman_environment.json`
+2. Select file: `tests/Product_Import_API.postman_environment.json`
 3. Click **Import**
 4. Select environment from dropdown (top right)
 
@@ -389,7 +389,7 @@ Setiap request memiliki built-in test scripts yang akan:
     "updated_at": "2025-03-27 10:00:52",
     "errors": [
       {
-        "row_number": 45,
+        "line_number": 45,
         "error_message": "Row 45: SKU is required",
         "row_data": ["Product Name", "", "10000", "50"]
       }
@@ -689,9 +689,9 @@ Follow the workflow above and start testing the API!
 
 ## 📞 Need Help?
 
-- Check [README.md](README.md) for API documentation
-- Read [INSTALLATION.md](INSTALLATION.md) for setup issues
-- See [QUICKSTART.md](QUICKSTART.md) for quick setup
+- Check [docs/README.md](docs/README.md) for API documentation
+- Read [docs/INSTALLATION.md](docs/INSTALLATION.md) for setup issues
+- See [docs/QUICKSTART.md](docs/QUICKSTART.md) for quick setup
 
 ---
 

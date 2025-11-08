@@ -48,15 +48,15 @@ php-redis-import-api/
 ├── .env                                # Environment Configuration (local)
 ├── .env.example                        # Environment Template
 ├── .gitignore                          # Git ignore rules
-├── ASSESSMENT.md                       # Assessment compliance documentation
+├── docs/ASSESSMENT.md                       # Assessment compliance documentation
 ├── composer.json                       # PHP dependencies & autoload config
 ├── composer.lock                       # Locked dependency versions
-├── INSTALLATION.md                     # Installation guide
-├── postman_collection.json             # Postman API collection
-├── PROJECT_STRUCTURE.md                # This file
-├── QUICKSTART.md                       # Quick start guide
-├── README.md                           # Main documentation
-├── sample.csv                          # Sample CSV data for testing
+├── docs/INSTALLATION.md                     # Installation guide
+├── tests/postman_collection.json             # Postman API collection
+├── docs/PROJECT_STRUCTURE.md                # This file
+├── docs/QUICKSTART.md                       # Quick start guide
+├── docs/README.md                           # Main documentation
+├── tests/samples/sample.csv                          # Sample CSV data for testing
 └── worker.php                          # Queue worker CLI script
 ```
 
@@ -174,7 +174,7 @@ Auto-generated log files with format: `app-YYYY-MM-DD.log`
 - Log levels (INFO, WARNING, ERROR, DEBUG)
 - Contextual data (JSON)
 
-**Retention:** Implement log rotation (see INSTALLATION.md)
+**Retention:** Implement log rotation (see docs/INSTALLATION.md)
 
 ---
 
@@ -232,11 +232,11 @@ Composer-managed dependencies (auto-generated).
 
 | File | Purpose |
 |------|---------|
-| `README.md` | Main documentation with API reference |
-| `INSTALLATION.md` | Installation & setup guide |
-| `QUICKSTART.md` | Quick start in 5 minutes |
-| `ASSESSMENT.md` | Assessment criteria compliance |
-| `PROJECT_STRUCTURE.md` | This file - project structure overview |
+| `docs/README.md` | Main documentation with API reference |
+| `docs/INSTALLATION.md` | Installation & setup guide |
+| `docs/QUICKSTART.md` | Quick start in 5 minutes |
+| `docs/ASSESSMENT.md` | Assessment criteria compliance |
+| `docs/PROJECT_STRUCTURE.md` | This file - project structure overview |
 
 ### Executable Files
 
@@ -248,8 +248,8 @@ Composer-managed dependencies (auto-generated).
 
 | File | Purpose |
 |------|---------|
-| `sample.csv` | Sample CSV data for testing |
-| `postman_collection.json` | Postman API collection |
+| `tests/samples/sample.csv` | Sample CSV data for testing |
+| `tests/postman_collection.json` | Postman API collection |
 
 ---
 
@@ -301,7 +301,7 @@ All config in `.env` file:
 - **Lowercase with extension:** `database.php`, `redis.php`
 
 ### Documentation Files
-- **UPPERCASE:** `README.md`, `INSTALLATION.md`
+- **UPPERCASE:** `docs/README.md`, `docs/INSTALLATION.md`
 
 ---
 

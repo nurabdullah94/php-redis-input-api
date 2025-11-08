@@ -147,7 +147,7 @@ class ImportController
             if (!empty($errors)) {
                 $response['errors'] = array_map(function($error) {
                     return [
-                        'row_number' => (int) $error['row_number'],
+                        'line_number' => (int) $error['line_number'],
                         'error_message' => $error['error_message'],
                         'row_data' => $error['row_data'] ? json_decode($error['row_data'], true) : null
                     ];

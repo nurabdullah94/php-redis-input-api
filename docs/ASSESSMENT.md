@@ -277,7 +277,7 @@ Upload → Check status → See errors logged:
   "failed": 4,
   "errors": [
     {
-      "row_number": 2,
+      "line_number": 2,
       "error_message": "Row 2: Product name is required"
     },
     ...
@@ -427,7 +427,7 @@ public function updateStatus(int $id, string $status): bool
 
 ## ✅ Dokumentasi
 
-### 1. README.md
+### 1. docs/README.md
 **Content:**
 - Project overview
 - Features list
@@ -438,9 +438,9 @@ public function updateStatus(int $id, string $status): bool
 - Troubleshooting
 - Project structure
 
-**Lokasi:** [README.md](README.md)
+**Lokasi:** [docs/README.md](docs/README.md)
 
-### 2. INSTALLATION.md
+### 2. docs/INSTALLATION.md
 **Content:**
 - Prerequisites
 - Step-by-step installation
@@ -450,7 +450,7 @@ public function updateStatus(int $id, string $status): bool
 - Production deployment
 - Common issues & solutions
 
-**Lokasi:** [INSTALLATION.md](INSTALLATION.md)
+**Lokasi:** [docs/INSTALLATION.md](docs/INSTALLATION.md)
 
 ### 3. Postman Collection
 **Content:**
@@ -461,11 +461,11 @@ public function updateStatus(int $id, string $status): bool
 - Environment variables
 - Response examples
 
-**Lokasi:** [postman_collection.json](postman_collection.json)
+**Lokasi:** [tests/postman_collection.json](tests/postman_collection.json)
 
 **Import ke Postman:**
 1. Open Postman
-2. Import → File → Select `postman_collection.json`
+2. Import → File → Select `tests/postman_collection.json`
 3. Set `base_url` variable
 4. Run requests
 
@@ -475,7 +475,7 @@ public function updateStatus(int $id, string $status): bool
 - Descriptive variable names (self-documenting)
 
 ### 5. Sample Data
-**Lokasi:** [sample.csv](sample.csv)
+**Lokasi:** [tests/samples/sample.csv](tests/samples/sample.csv)
 
 Content: 10 sample products untuk testing
 
@@ -539,8 +539,8 @@ Content: 10 sample products untuk testing
 - [x] PSR-12 compliant
 
 ### ✅ Dokumentasi
-- [x] README.md lengkap
-- [x] INSTALLATION.md detail
+- [x] docs/README.md lengkap
+- [x] docs/INSTALLATION.md detail
 - [x] Postman collection
 - [x] Code comments
 - [x] Sample data

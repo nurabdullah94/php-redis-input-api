@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS import_jobs (
 CREATE TABLE IF NOT EXISTS import_errors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     import_job_id INT NOT NULL,
-    row_number INT NOT NULL,
+    line_number INT NOT NULL,
     error_message TEXT NOT NULL,
     row_data TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

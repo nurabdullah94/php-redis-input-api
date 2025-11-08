@@ -10,11 +10,15 @@ class RedisClient
     private function __construct()
     {
         try {
+            $host = $_ENV['REDIS_HOST'] ?? getenv('REDIS_HOST') ?? '127.0.0.1';
+            $port = $_ENV['REDIS_PORT'] ?? getenv('REDIS_PORT') ?? '6379';
+            $password = $_ENV['REDIS_PASSWORD'] ?? getenv('REDIS_PASSWORD') ?? null;
+
             $this->redis = new Predis\Client([
                 'scheme' => 'tcp',
-                'host'   => $_ENV['REDIS_HOST'],
-                'port'   => $_ENV['REDIS_PORT'],
-                'password' => !empty($_ENV['REDIS_PASSWORD']) ? $_ENV['REDIS_PASSWORD'] : null,
+                'host'   => $host,
+                'port'   => $port,
+                'password' => !empty($password) ? $password : null,
             ]);
 
             // Test connection

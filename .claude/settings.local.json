@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(composer install:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(rm:*)",
+      "Bash(timeout 3 php:*)"
     ],
     "deny": [],
     "ask": []

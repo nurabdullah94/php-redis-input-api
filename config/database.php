@@ -7,11 +7,11 @@ class Database
 
     private function __construct()
     {
-        $host = $_ENV['DB_HOST'];
-        $port = $_ENV['DB_PORT'];
-        $dbname = $_ENV['DB_NAME'];
-        $user = $_ENV['DB_USER'];
-        $pass = $_ENV['DB_PASS'];
+        $host = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?? 'localhost';
+        $port = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?? '3306';
+        $dbname = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?? 'product_import';
+        $user = $_ENV['DB_USER'] ?? getenv('DB_USER') ?? 'root';
+        $pass = $_ENV['DB_PASS'] ?? getenv('DB_PASS') ?? '';
 
         try {
             $this->connection = new PDO(
