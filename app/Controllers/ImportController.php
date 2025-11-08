@@ -178,7 +178,7 @@ class ImportController
         }
 
         // Check header
-        $header = fgetcsv($handle);
+        $header = fgetcsv($handle, 0, ',', '"', '');
         if (!$header || count($header) < 4) {
             fclose($handle);
             return ['valid' => false, 'error' => 'Invalid CSV format. Expected columns: name, sku, price, stock'];
@@ -197,7 +197,7 @@ class ImportController
 
         // Count rows
         $rowCount = 0;
-        while (fgetcsv($handle) !== false) {
+        while (fgetcsv($handle, 0, ',', '"', '') !== false) {
             $rowCount++;
         }
 

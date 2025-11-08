@@ -146,9 +146,9 @@ class ImportWorker
         $rowNumber = 0;
 
         // Skip header row
-        fgetcsv($handle);
+        fgetcsv($handle, 0, ',', '"', '');
 
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '')) !== false) {
             $rowNumber++;
 
             try {
